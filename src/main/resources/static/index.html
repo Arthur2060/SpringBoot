@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Lista de Usuários</h1>
+    <ul id="lista"></ul>
+
+<script>
+    async function carregarDados() {
+        const resposta = await fetch("http://localhost:8080/atualizacao");
+        const dados = await resposta.json();
+        let lista = document.getElementById("lista");
+        lista.innerHTML = "";
+        dados.forEach(user => {
+            let item = document.createElement("li");
+            item.textContent = `${user.nome} - ${user.horario}`;
+            lista.appendChild(item);
+        });
+    }
+    carregarDados();
+</script>
+</body>
+</html>
