@@ -19,6 +19,11 @@ public class AtualizacaoController {
                 "nome": "Gislene",
                 "horario": "14:00:00",
                 "imagem": "-"
+            },
+            {
+                "nome": "Arthur",
+                "horario": "06:00:00",
+                "imagem": "-"
             }]
         """;
     }
