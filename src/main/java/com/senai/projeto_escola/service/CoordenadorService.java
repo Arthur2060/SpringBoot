@@ -1,4 +1,4 @@
-package com.estudos.Spring.service;
+package com.senai.projeto_escola.service;
 
 import com.senai.projeto_escola.domain.entity.Coordenador;
 import com.senai.projeto_escola.domain.entity.Professor;
@@ -30,8 +30,22 @@ public class CoordenadorService {
             professor.setNome(professorDto.nome());
             professor.setIdade(professorDto.idade());
             professor.setTurma(professorDto.turma());
-            professor.setUnidade(professorDto.unidadesCurriculares());
+            professor.setUnidadesCurriculares(professorDto.unidadesCurriculares());
             return professor;
         }).toList();
+    }
+
+    public List<CoordenadorDto> listar() {
+        return repository.findAll().stream().map(c -> new CoordenadorDto(
+                c.getId(),
+                c.getNome(),
+                c.getIdade(),
+                c.getEquipeDeProfessores().stream().map(p -> new ProfessorDto(
+                        p.getId(),
+                        p.getNome(),
+                        p.getTurma(),
+                        p.getUnidadesCurriculares()
+                )).toList()
+        )).toList();
     }
 }
