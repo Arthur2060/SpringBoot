@@ -43,6 +43,7 @@ public class CoordenadorService {
                 c.getEquipeDeProfessores().stream().map(p -> new ProfessorDto(
                         p.getId(),
                         p.getNome(),
+                        p.getIdade(),
                         p.getTurma(),
                         p.getUnidadesCurriculares()
                 )).toList()
