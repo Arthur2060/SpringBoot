@@ -14,13 +14,21 @@ public class ProfessorService {
     @Autowired
     private ProfessorRepository professorRepo;
 
-    public void salvar (ProfessorDto professorDto) {
-        Professor professor = new Professor();
-        professor.setNome(professorDto.nome());
-        professor.setIdade(professorDto.idade());
-        professor.setTurma(professorDto.turma());
-        professor.setUnidadesCurriculares(professorDto.unidadesCurriculares());
-        professorRepo.save(professor);
+    @Autowired
+    private ValidadorProfessor professorValid;
+
+    public boolean salvar (ProfessorDto professorDto) {
+        if (professorValid.validar(professorDto)) {
+            Professor professor = new Professor();
+            professor.setNome(professorDto.nome());
+            professor.setIdade(professorDto.idade());
+            professor.setTurma(professorDto.turma());
+            professor.setUnidadesCurriculares(professorDto.unidadesCurriculares());
+            professorRepo.save(professor);
+            return true;
+        }else {
+            return false;
+        }
     }
 
     public List<ProfessorDto> listar() {
@@ -45,16 +53,20 @@ public class ProfessorService {
     }
 
     public boolean atualizar (Long id, ProfessorDto professorDto) {
-        return professorRepo.findById(id).map(
-                p -> {
-                    p.setNome(professorDto.nome());
-                    p.setIdade(professorDto.idade());
-                    p.setUnidadesCurriculares(professorDto.unidadesCurriculares());
-                    p.setTurma(professorDto.turma());
-                    professorRepo.save(p);
-                    return true;
-                }
-        ).orElse(false);
+        if (professorValid.validar(professorDto)) {
+            return professorRepo.findById(id).map(
+                    p -> {
+                        p.setNome(professorDto.nome());
+                        p.setIdade(professorDto.idade());
+                        p.setUnidadesCurriculares(professorDto.unidadesCurriculares());
+                        p.setTurma(professorDto.turma());
+                        professorRepo.save(p);
+                        return true;
+                    }
+            ).orElse(false);
+        } else {
+            return false;
+        }
     }
 
     public boolean deletar(Long id) {

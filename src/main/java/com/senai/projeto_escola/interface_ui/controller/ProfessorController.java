@@ -17,14 +17,17 @@ public class ProfessorController {
 
     @PostMapping
     public ResponseEntity<String> adicionarProfessor(@RequestBody ProfessorDto obj) {
-        service.salvar(obj);
-        return ResponseEntity.ok("Professor adicionado com sucesso!");
+        if (service.salvar(obj)) {
+            return ResponseEntity.ok("Professor adicionado com sucesso!");
+        } else {
+            return ResponseEntity.badRequest().body("Erro ao adicionar professor!");
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarProfessor(@PathVariable Long id) {
         if (service.deletar(id)) {
-            return ResponseEntity.ok("Professor deltado com sucesso");
+            return ResponseEntity.ok("Professor deletado com sucesso");
         } else {
             return ResponseEntity.notFound().build();
         }

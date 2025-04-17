@@ -8,6 +8,7 @@ import com.senai.projeto_escola.application.dto.ProfessorDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,23 +18,31 @@ public class CoordenadorService {
     @Autowired
     private CoordenadorRepository coordenadorRepo;
 
-    public void salvar (CoordenadorDto coordenadorDto) {
-        Coordenador coordenador = new Coordenador();
-        coordenador.setNome(coordenadorDto.nome());
-        coordenador.setIdade(coordenadorDto.idade());
-        coordenador.setEquipeDeProfessores(mapEquipe(coordenadorDto.equipe()));
-        coordenadorRepo.save(coordenador);
+    @Autowired
+    private ValidadorCoordenador coordenadorValid;
+
+    public boolean salvar (CoordenadorDto coordenadorDto) {
+        if (coordenadorValid.validar(coordenadorDto)) {
+            Coordenador coordenador = new Coordenador();
+            coordenador.setNome(coordenadorDto.nome());
+            coordenador.setIdade(coordenadorDto.idade());
+            coordenador.setEquipeDeProfessores(mapEquipe(coordenadorDto.equipe()));
+            coordenadorRepo.save(coordenador);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private List<Professor> mapEquipe(List<ProfessorDto> preofessoresDto) {
-        return preofessoresDto.stream().map(professorDto -> {
+        return new ArrayList<>( preofessoresDto.stream().map(professorDto -> {
             Professor professor = new Professor();
             professor.setNome(professorDto.nome());
             professor.setIdade(professorDto.idade());
             professor.setTurma(professorDto.turma());
             professor.setUnidadesCurriculares(professorDto.unidadesCurriculares());
             return professor;
-        }).toList();
+        }).toList());
     }
 
     public List<CoordenadorDto> listar() {
@@ -69,15 +78,19 @@ public class CoordenadorService {
     }
 
     public boolean atualizar (Long id, CoordenadorDto coordenadorDto) {
-        return coordenadorRepo.findById(id).map(
-                c -> {
-                    c.setNome(coordenadorDto.nome());
-                    c.setIdade(coordenadorDto.idade());
-                    c.setEquipeDeProfessores(mapEquipe(coordenadorDto.equipe()));
-                    coordenadorRepo.save(c);
-                    return true;
-                }
-        ).orElse(false);
+        if (coordenadorValid.validar(coordenadorDto)) {
+            return coordenadorRepo.findById(id).map(
+                    c -> {
+                        c.setNome(coordenadorDto.nome());
+                        c.setIdade(coordenadorDto.idade());
+                        c.setEquipeDeProfessores(mapEquipe(coordenadorDto.equipe()));
+                        coordenadorRepo.save(c);
+                        return true;
+                    }
+            ).orElse(false);
+        } else {
+            return false;
+        }
     }
 
     public boolean deletar(Long id) {

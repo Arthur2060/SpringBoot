@@ -17,8 +17,11 @@ public class CoordenadorController {
 
     @PostMapping
     public ResponseEntity<String> adicionarCoordenador(@RequestBody CoordenadorDto obj) {
-        service.salvar(obj);
-        return ResponseEntity.ok("Coordenador adicionado com sucesso!");
+        if (service.salvar(obj)) {
+            return ResponseEntity.ok("Coordenador adicionado com sucesso!");
+        } else {
+            return ResponseEntity.badRequest().body("Erro ao adicionar coordenador!");
+        }
     }
 
     @DeleteMapping("/{id}")

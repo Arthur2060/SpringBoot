@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
     <style>
         * {
@@ -24,28 +26,49 @@
             list-style: none;
         }
 
-        #lista li {
-
-        }
+        #lista li {}
     </style>
 </head>
+
 <body>
     <h1>Lista de Usuários</h1>
     <ul id="lista"></ul>
 
-<script>
-    async function carregarDados() {
-        const resposta = await fetch("http://localhost:8080/atualizacao");
-        const dados = await resposta.json();
-        let lista = document.getElementById("lista");
-        lista.innerHTML = "";
-        dados.forEach(user => {
-            let item = document.createElement("li");
-            item.textContent = `${user.nome} - ${user.horario}`;
-            lista.appendChild(item);
-        });
-    }
-    carregarDados();
-</script>
+    <script>
+        async function carregarDados() {
+            const respostaCoordenador = await fetch("http://localhost:8080/coordenador");
+
+            if (!respostaCoordenador.ok) {
+                alert("Erro ao carregar lista de coordenadores")
+            }
+
+            const dadosCoordenador = await resposta.json();
+
+            let lista = document.getElementById("lista");
+            lista.innerHTML = "";
+            dadosCoordenador.forEach(user => {
+                let item = document.createElement("li");
+                item.textContent = `${user.nome}`;
+                lista.appendChild(item);
+            });
+
+            const respostaProfessor = await fetch("http://localhost:8080/professor");
+
+            if (!respostaProfessor.ok) {
+                alert("Erro ao carregar lista de professores")
+            }
+
+            const dadosProfessor = await resposta.json();
+
+            lista.innerHTML = "";
+            dadosProfessor.forEach(user => {
+                let item = document.createElement("li");
+                item.textContent = `${user.nome}`;
+                lista.appendChild(item);
+            });
+        }
+        carregarDados();
+    </script>
 </body>
+
 </html>
