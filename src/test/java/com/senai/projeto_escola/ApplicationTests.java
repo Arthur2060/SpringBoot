@@ -1,4 +1,4 @@
-package com.estudos.Spring;
+package com.senai.projeto_escola;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

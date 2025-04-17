@@ -1,15 +1,18 @@
-package com.senai.projeto_escola.interface_ui.controller.controller;
+package com.senai.projeto_escola.interface_ui.controller;
 
-import com.senai.projeto_escola.dto.CoordenadorDto;
-import com.senai.projeto_escola.service.CoordenadorService;
+import com.senai.projeto_escola.application.dto.CoordenadorDto;
+import com.senai.projeto_escola.application.service.CoordenadorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/Coordenador")
+@RequestMapping("/coordenador")
 public class CoordenadorController {
+
+    @Autowired
     private CoordenadorService service;
 
     @PostMapping
@@ -20,7 +23,7 @@ public class CoordenadorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarCoordenador(@PathVariable Long id) {
-        if (service.delete(id)) {
+        if (service.deletar(id)) {
             return ResponseEntity.ok("Coordenador deltado com sucesso");
         } else {
             return ResponseEntity.notFound().build();
@@ -29,19 +32,19 @@ public class CoordenadorController {
 
     @GetMapping
     public ResponseEntity<List<CoordenadorDto>> listarCoordenadores() {
-        return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(service.listar());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CoordenadorDto> listarUmCoordenador(@PathVariable Long id) {
-        return service.getOne(id)
+        return service.buscarPorId(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity::notFound().build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> atualizarUmCoordenador(@PathVariable Long id, @RequestBody CoordenadorDto obj) {
-        if (service.update(id, obj)) {
+        if (service.atualizar(id, obj)) {
             return ResponseEntity.ok("Coordenador atualizado com sucesso!");
         } else {
             return ResponseEntity.notFound().build();

@@ -1,4 +1,4 @@
-package com.senai.projeto_escola.dto;
+package com.senai.projeto_escola.application.dto;
 
 import java.util.List;
 
