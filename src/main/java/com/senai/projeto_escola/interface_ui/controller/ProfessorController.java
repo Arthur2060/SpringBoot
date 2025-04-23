@@ -17,11 +17,8 @@ public class ProfessorController {
 
     @PostMapping
     public ResponseEntity<String> adicionarProfessor(@RequestBody ProfessorDto obj) {
-        if (service.salvar(obj)) {
-            return ResponseEntity.ok("Professor adicionado com sucesso!");
-        } else {
-            return ResponseEntity.badRequest().body("Erro ao adicionar professor!");
-        }
+        service.salvar(obj);
+        return ResponseEntity.ok("Professor adicionado com sucesso!");
     }
 
     @DeleteMapping("/{id}")

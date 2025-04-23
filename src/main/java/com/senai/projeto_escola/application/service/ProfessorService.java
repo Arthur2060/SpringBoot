@@ -3,6 +3,7 @@ package com.senai.projeto_escola.application.service;
 import com.senai.projeto_escola.domain.entity.Professor;
 import com.senai.projeto_escola.domain.repositories.ProfessorRepository;
 import com.senai.projeto_escola.application.dto.ProfessorDto;
+import com.senai.projeto_escola.domain.service.ValidadorProfessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,18 +18,14 @@ public class ProfessorService {
     @Autowired
     private ValidadorProfessor professorValid;
 
-    public boolean salvar (ProfessorDto professorDto) {
-        if (professorValid.validar(professorDto)) {
-            Professor professor = new Professor();
-            professor.setNome(professorDto.nome());
-            professor.setIdade(professorDto.idade());
-            professor.setTurma(professorDto.turma());
-            professor.setUnidadesCurriculares(professorDto.unidadesCurriculares());
-            professorRepo.save(professor);
-            return true;
-        }else {
-            return false;
-        }
+    public void salvar (ProfessorDto professorDto) {
+        validar(professorDto);
+        Professor professor = new Professor();
+        professor.setNome(professorDto.nome());
+        professor.setIdade(professorDto.idade());
+        professor.setTurma(professorDto.turma());
+        professor.setUnidadesCurriculares(professorDto.unidadesCurriculares());
+        professorRepo.save(professor);
     }
 
     public List<ProfessorDto> listar() {
@@ -53,20 +50,17 @@ public class ProfessorService {
     }
 
     public boolean atualizar (Long id, ProfessorDto professorDto) {
-        if (professorValid.validar(professorDto)) {
-            return professorRepo.findById(id).map(
-                    p -> {
-                        p.setNome(professorDto.nome());
-                        p.setIdade(professorDto.idade());
-                        p.setUnidadesCurriculares(professorDto.unidadesCurriculares());
-                        p.setTurma(professorDto.turma());
-                        professorRepo.save(p);
-                        return true;
-                    }
-            ).orElse(false);
-        } else {
-            return false;
-        }
+        validar(professorDto);
+        return professorRepo.findById(id).map(
+                p -> {
+                    p.setNome(professorDto.nome());
+                    p.setIdade(professorDto.idade());
+                    p.setUnidadesCurriculares(professorDto.unidadesCurriculares());
+                    p.setTurma(professorDto.turma());
+                    professorRepo.save(p);
+                    return true;
+                }
+                ).orElse(false);
     }
 
     public boolean deletar(Long id) {
@@ -75,6 +69,14 @@ public class ProfessorService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    private void validar(ProfessorDto obj) {
+        try {
+            professorValid.validar(obj);
+        } catch (IllegalArgumentException e) {
+
         }
     }
 }

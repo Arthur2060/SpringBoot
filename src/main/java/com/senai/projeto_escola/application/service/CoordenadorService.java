@@ -5,6 +5,8 @@ import com.senai.projeto_escola.domain.entity.Professor;
 import com.senai.projeto_escola.domain.repositories.CoordenadorRepository;
 import com.senai.projeto_escola.application.dto.CoordenadorDto;
 import com.senai.projeto_escola.application.dto.ProfessorDto;
+import com.senai.projeto_escola.domain.service.ValidadorCoordenador;
+import com.senai.projeto_escola.domain.service.ValidadorProfessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,17 +23,13 @@ public class CoordenadorService {
     @Autowired
     private ValidadorCoordenador coordenadorValid;
 
-    public boolean salvar (CoordenadorDto coordenadorDto) {
-        if (coordenadorValid.validar(coordenadorDto)) {
-            Coordenador coordenador = new Coordenador();
-            coordenador.setNome(coordenadorDto.nome());
-            coordenador.setIdade(coordenadorDto.idade());
-            coordenador.setEquipeDeProfessores(mapEquipe(coordenadorDto.equipe()));
-            coordenadorRepo.save(coordenador);
-            return true;
-        } else {
-            return false;
-        }
+    public void salvar (CoordenadorDto coordenadorDto) {
+        validar(coordenadorDto);
+        Coordenador coordenador = new Coordenador();
+        coordenador.setNome(coordenadorDto.nome());
+        coordenador.setIdade(coordenadorDto.idade());
+        coordenador.setEquipeDeProfessores(mapEquipe(coordenadorDto.equipe()));
+        coordenadorRepo.save(coordenador);
     }
 
     private List<Professor> mapEquipe(List<ProfessorDto> preofessoresDto) {
@@ -78,19 +76,16 @@ public class CoordenadorService {
     }
 
     public boolean atualizar (Long id, CoordenadorDto coordenadorDto) {
-        if (coordenadorValid.validar(coordenadorDto)) {
-            return coordenadorRepo.findById(id).map(
-                    c -> {
-                        c.setNome(coordenadorDto.nome());
-                        c.setIdade(coordenadorDto.idade());
-                        c.setEquipeDeProfessores(mapEquipe(coordenadorDto.equipe()));
-                        coordenadorRepo.save(c);
-                        return true;
-                    }
+        validar(coordenadorDto);
+        return coordenadorRepo.findById(id).map(
+                c -> {
+                    c.setNome(coordenadorDto.nome());
+                    c.setIdade(coordenadorDto.idade());
+                    c.setEquipeDeProfessores(mapEquipe(coordenadorDto.equipe()));
+                    coordenadorRepo.save(c);
+                    return true;
+                }
             ).orElse(false);
-        } else {
-            return false;
-        }
     }
 
     public boolean deletar(Long id) {
@@ -99,6 +94,14 @@ public class CoordenadorService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    private void validar(CoordenadorDto obj) {
+        try {
+            coordenadorValid.validar(obj);
+        } catch (IllegalArgumentException e) {
+
         }
     }
 }
