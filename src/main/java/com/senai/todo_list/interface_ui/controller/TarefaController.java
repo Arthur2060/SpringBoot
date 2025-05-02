@@ -3,6 +3,7 @@ package com.senai.todo_list.interface_ui.controller;
 import com.senai.todo_list.model.dtos.TarefaDto;
 import com.senai.todo_list.model.entities.Tarefa;
 import com.senai.todo_list.service.ServiceInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/tarefa")
 public class TarefaController {
+    @Autowired
     private ServiceInterface service;
 
     @PostMapping
